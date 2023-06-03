@@ -6,8 +6,8 @@ I declare that this assignment is my own work in accordance with Seneca  Academi
 Name: Vansh Rana
 Student ID: 169672219 
 Date: 2 June 2023
-Cyclic Web App URL: 
-GitHub Repository URL: 
+Cyclic Web App URL: https://comfortable-mite-pocketbook.cyclic.app
+GitHub Repository URL: https://github.com/Vanshrana01/Assignment2.git
 
 ********************************************************************************/ 
 
