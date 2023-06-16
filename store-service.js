@@ -53,6 +53,24 @@ module.exports.getPublishedItems= () =>{
         }
     });
 }
+function addItem(itemData) {
+    return new Promise((resolve, reject) => {
+      if (itemData.published === undefined) {
+        itemData.published = false;
+      } else {
+        itemData.published = true;
+      }
+      itemData.id = items.length + 1;
+      items.push(itemData);
+      resolve(itemData);
+    });
+  }
+  
+  module.exports = {
+    // ...existing functions,
+    addItem
+  };
+  
 
 module.exports.getCategories= () =>{
     return new Promise((resolve,reject)=>{
@@ -64,3 +82,22 @@ module.exports.getCategories= () =>{
         }
     })
 };
+
+function addItem(itemData) {
+    return new Promise((resolve, reject) => {
+      if (itemData.published === undefined) {
+        itemData.published = false;
+      } else {
+        itemData.published = true;
+      }
+      itemData.id = items.length + 1;
+      items.push(itemData);
+      resolve(itemData);
+    });
+  }
+  
+  module.exports = {
+    // ...existing functions,
+    addItem
+  };
+  
