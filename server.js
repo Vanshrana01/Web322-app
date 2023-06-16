@@ -15,6 +15,11 @@ const express = require('express')
 const store_service = require('./store-service')
 const app = express()
 const port = process.env.PORT || 8080
+const multer = require("multer");
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+const upload = multer();
+
 
 app.use(express.static('public')); 
 app.set('view engine', 'ejs');
@@ -51,6 +56,10 @@ app.get('/categories', (req, res) => {
     })
   });
 
+  app.get('/items/add', (req, res) => {
+    const filePath = path.join(__dirname, 'views', 'addItem.html');
+    res.sendFile(filePath);
+  });
 
   app.get('*', function(req, res){
     res.send('Page not found, check URL', 404);
@@ -72,6 +81,13 @@ store_service.initialize().then(function(){
 app.use((req,res)=>{
   res.status(404).send("Page does not exist")
 })
+
+cloudinary.config({
+  cloud_name: 'dzvfunw68',
+  api_key: '988669558532177',
+  api_secret: 'RQeeOL7uaN_6cTGIWSHX3sMz_CE',
+  secure: true
+});
 
 
 
