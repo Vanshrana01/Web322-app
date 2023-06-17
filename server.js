@@ -106,12 +106,12 @@ GitHub Repository URL: https://github.com/Vanshrana01/Assignment2.git
 //   res.status(404).send("Page does not exist")
 // })
 
-cloudinary.config({
-  cloud_name: 'dzvfunw68',
-  api_key: '988669558532177',
-  api_secret: 'RQeeOL7uaN_6cTGIWSHX3sMz_CE',
-  secure: true
-});
+// cloudinary.config({
+//   cloud_name: 'dzvfunw68',
+//   api_key: '988669558532177',
+//   api_secret: 'RQeeOL7uaN_6cTGIWSHX3sMz_CE',
+//   secure: true
+// });
 
 // app.post('/items/add', upload, (req, res) => {
 //   if (req.file) {
