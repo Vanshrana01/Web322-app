@@ -12,7 +12,7 @@ GitHub Repository URL: https://github.com/Vanshrana01/Assignment2.git
 ********************************************************************************/
 
 const path = require('path'); 
-const storeService = require('./store-service'); 
+const store_service = require('./store-service'); 
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 8080;
@@ -46,7 +46,7 @@ app.get('/items', (req, res) => {
   const { category, minDate } = req.query;
 
   if (category !== undefined) {
-    storeService.getItemsByCategory(category)
+    store_service.getItemsByCategory(category)
       .then(filteredItems => {
         res.json(filteredItems);
       })
@@ -54,7 +54,7 @@ app.get('/items', (req, res) => {
         res.json({ message: err });
       });
   } else if (minDate !== undefined) {
-    storeService.getItemsByMinDate(minDate)
+    store_service.getItemsByMinDate(minDate)
       .then(filteredItems => {
         res.json(filteredItems);
       })
@@ -62,7 +62,7 @@ app.get('/items', (req, res) => {
         res.json({ message: err });
       });
   } else {
-    storeService.getAllItems()
+    store_service.getAllItems()
       .then(allItems => {
         res.json(allItems);
       })
@@ -73,7 +73,7 @@ app.get('/items', (req, res) => {
 });
 
 app.get('/categories', (req, res) => {
-  storeService.getCategories().then((data) => {
+  store_service.getCategories().then((data) => {
     res.json(data)
   }).catch((err) => {
     return { 'message': err }
@@ -95,7 +95,7 @@ function onHTTPstart() {
   console.log("server started on port: " + port)
 }
 
-storeService.initialize().then(function () {
+store_service.initialize().then(function () {
   app.listen(port, onHTTPstart);
 }).catch(function (err) {
   console.log("unable to start" + err)
@@ -146,7 +146,7 @@ app.post('/items/add', upload, (req, res) => {
 
   function processItem(imageUrl) {
     req.body.featureImage = imageUrl;
-    storeService.addItem(req.body)
+    store_service.addItem(req.body)
       .then((addedItem) => {
         res.redirect('/items');
       })
@@ -159,7 +159,7 @@ app.post('/items/add', upload, (req, res) => {
 
 app.get('/item/:value', (req, res) => {
   const itemId = req.params.value;
-  storeService.getItemById(itemId)
+  store_service.getItemById(itemId)
     .then(item => {
       if (item) {
         res.json(item);
