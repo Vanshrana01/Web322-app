@@ -73,7 +73,7 @@ app.get('/items', (req, res) => {
 });
 
 app.get('/categories', (req, res) => {
-  store_service.getCategories().then((data) => {
+  storeService.getCategories().then((data) => {
     res.json(data)
   }).catch((err) => {
     return { 'message': err }
