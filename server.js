@@ -95,7 +95,7 @@ function onHTTPstart() {
   console.log("server started on port: " + port)
 }
 
-store_service.initialize().then(function () {
+storeService.initialize().then(function () {
   app.listen(port, onHTTPstart);
 }).catch(function (err) {
   console.log("unable to start" + err)
