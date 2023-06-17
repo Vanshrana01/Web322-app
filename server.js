@@ -41,11 +41,24 @@ app.get('/shop', (req, res) => {
 });
 
 app.get('/items', (req, res) => {
-  store_service.getAllItems().then((data) => {
-    res.json(data)
-  }).catch((err) => {
-    return { 'message': err }
-  })
+  //   store_service.getAllItems().then((data) => {
+  //     res.json(data)
+  //   }).catch((err) => {
+  //     return { 'message': err }
+  //   })
+  // });
+  const { category, minDate } = req.query;
+
+  if (category !== undefined) {
+    const filteredItems = storeService.getItemsByCategory(category);
+    res.json(filteredItems);
+  } else if (minDate !== undefined) {
+    const filteredItems = storeService.getItemsByMinDate(minDate);
+    res.json(filteredItems);
+  } else {
+    const allItems = storeService.getAllItems();
+    res.json(allItems);
+  }
 });
 
 app.get('/categories', (req, res) => {
@@ -168,4 +181,15 @@ function processItem(imageUrl) {
 
   // TODO: Process the req.body and add it as a new Item before redirecting to /items
 }
+
+app.get('/item/:value', (req, res) => {
+  const itemId = req.params.value;
+  const item = storeService.getItemById(itemId);
+
+  if (item) {
+    res.json(item);
+  } else {
+    res.status(404).json({ error: 'Item not found' });
+  }
+});
 
