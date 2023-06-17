@@ -11,14 +11,16 @@ GitHub Repository URL: https://github.com/Vanshrana01/Assignment2.git
 
 ********************************************************************************/
 
-const express = require('express')
-const store_service = require('./store-service')
-const app = express()
-const port = process.env.PORT || 8080
-import multer from 'multer';
+const path = require('path'); 
+const storeService = require('./store-service'); 
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 8080;
+const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-const upload = multer();
+const upload = multer().single("featureImage");
+
 
 
 app.use(express.static('public'));
@@ -41,23 +43,32 @@ app.get('/shop', (req, res) => {
 });
 
 app.get('/items', (req, res) => {
-  //   store_service.getAllItems().then((data) => {
-  //     res.json(data)
-  //   }).catch((err) => {
-  //     return { 'message': err }
-  //   })
-  // });
   const { category, minDate } = req.query;
 
   if (category !== undefined) {
-    const filteredItems = storeService.getItemsByCategory(category);
-    res.json(filteredItems);
+    storeService.getItemsByCategory(category)
+      .then(filteredItems => {
+        res.json(filteredItems);
+      })
+      .catch(err => {
+        res.json({ message: err });
+      });
   } else if (minDate !== undefined) {
-    const filteredItems = storeService.getItemsByMinDate(minDate);
-    res.json(filteredItems);
+    storeService.getItemsByMinDate(minDate)
+      .then(filteredItems => {
+        res.json(filteredItems);
+      })
+      .catch(err => {
+        res.json({ message: err });
+      });
   } else {
-    const allItems = storeService.getAllItems();
-    res.json(allItems);
+    storeService.getAllItems()
+      .then(allItems => {
+        res.json(allItems);
+      })
+      .catch(err => {
+        res.json({ message: err });
+      });
   }
 });
 
@@ -102,7 +113,7 @@ cloudinary.config({
   secure: true
 });
 
-app.post('/items/add', upload.single("featureImage"), (req, res) => {
+app.post('/items/add', upload, (req, res) => {
   if (req.file) {
     let streamUpload = (req) => {
       return new Promise((resolve, reject) => {
@@ -140,56 +151,23 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
         res.redirect('/items');
       })
       .catch((error) => {
-        // Handle error
         console.error(error);
         res.redirect('/items');
       });
   }
 });
-if (req.file) {
-  let streamUpload = (req) => {
-    return new Promise((resolve, reject) => {
-      let stream = cloudinary.uploader.upload_stream(
-        (error, result) => {
-          if (result) {
-            resolve(result);
-          } else {
-            reject(error);
-          }
-        }
-      );
-
-      streamifier.createReadStream(req.file.buffer).pipe(stream);
-    });
-  };
-
-  async function upload(req) {
-    let result = await streamUpload(req);
-    console.log(result);
-    return result;
-  }
-
-  upload(req).then((uploaded) => {
-    processItem(uploaded.url);
-  });
-} else {
-  processItem("");
-}
-
-function processItem(imageUrl) {
-  req.body.featureImage = imageUrl;
-
-  // TODO: Process the req.body and add it as a new Item before redirecting to /items
-}
 
 app.get('/item/:value', (req, res) => {
   const itemId = req.params.value;
-  const item = storeService.getItemById(itemId);
-
-  if (item) {
-    res.json(item);
-  } else {
-    res.status(404).json({ error: 'Item not found' });
-  }
+  storeService.getItemById(itemId)
+    .then(item => {
+      if (item) {
+        res.json(item);
+      } else {
+        res.status(404).json({ error: 'Item not found' });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Internal server error' });
+    });
 });
-
