@@ -162,3 +162,7 @@ app.use((req,res)=>{
 
 app.engine('.hbs', exphbs({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
+
+app.get('/about', (req, res) => {
+  res.render('about', { pageTitle: "Homer Simpson's Store" });
+});
