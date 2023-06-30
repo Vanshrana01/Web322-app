@@ -19,6 +19,8 @@ const multer = require("multer");
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 const upload = multer(); // no { storage: storage }
+const exphbs = require('express-handlebars');
+
 
 cloudinary.config({
   cloud_name: 'dzvfunw68',
@@ -157,3 +159,6 @@ store_service.initialize().then(function(){
 app.use((req,res)=>{
   res.status(404).send("Page does not exist")
 })
+
+app.engine('.hbs', exphbs({ extname: '.hbs' }));
+app.set('view engine', '.hbs');
