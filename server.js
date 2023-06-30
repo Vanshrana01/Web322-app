@@ -36,9 +36,9 @@ app.get('/', (req, res) => {
   res.redirect("/about")
 });
 
-app.get('/about', (req, res) => {
-    res.sendFile(__dirname + "/views/about.html")
-  });
+// app.get('/about', (req, res) => {
+//     res.sendFile(__dirname + "/views/about.html")
+//   });
 
 app.get('/shop', (req, res) => {
   store_service.getPublishedItems().then((data)=>{
@@ -163,6 +163,10 @@ app.use((req,res)=>{
 app.engine('.hbs', exphbs({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
 
+// app.get('/about', (req, res) => {
+//   res.render('about', { pageTitle: "Vansh Rana's Camp" });
+// });
+
 app.get('/about', (req, res) => {
-  res.render('about', { pageTitle: "Homer Simpson's Store" });
+  res.status(200).render('about', { pageTitle: "Vansh Rana's Camp" });
 });
