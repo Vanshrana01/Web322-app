@@ -85,10 +85,14 @@ app.get('/items', (req, res) => {
   }
 });
 
+// app.get('/items/add', (req, res) => {
+//   console.log("test");
+//     res.sendFile(__dirname + "/views/addItem.html")
+//   });
 app.get('/items/add', (req, res) => {
-  console.log("test");
-    res.sendFile(__dirname + "/views/addItem.html")
-  });
+  res.render('addPost'); 
+});
+
 
 app.get('/items/:value', (req, res) => {
   const value = parseInt(req.params.value, 10);
