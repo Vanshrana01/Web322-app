@@ -32,6 +32,17 @@ cloudinary.config({
 app.use(express.static('public')); 
 app.set('view engine', 'ejs');
 
+app.engine('.hbs', exphbs({ extname: '.hbs' }));
+app.set('view engine', '.hbs');
+
+// app.get('/about', (req, res) => {
+//   res.render('about', { pageTitle: "Vansh Rana's Camp" });
+// });
+
+app.get('/about', (req, res) => {
+  res.status(200).render('about', { pageTitle: "Vansh Rana's Camp" });
+});
+
 app.get('/', (req, res) => {
   res.redirect("/about")
 });
@@ -160,13 +171,4 @@ app.use((req,res)=>{
   res.status(404).send("Page does not exist")
 })
 
-app.engine('.hbs', exphbs({ extname: '.hbs' }));
-app.set('view engine', '.hbs');
 
-// app.get('/about', (req, res) => {
-//   res.render('about', { pageTitle: "Vansh Rana's Camp" });
-// });
-
-app.get('/about', (req, res) => {
-  res.status(200).render('about', { pageTitle: "Vansh Rana's Camp" });
-});
