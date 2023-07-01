@@ -74,6 +74,7 @@ module.exports.addItem = (itemData)=>{
             itemData.published=true;
         }
         itemData.id=items.length+1;
+        itemData.postDate = new Date().toISOString().slice(0, 10);
         items.push(itemData);
         resolve(itemData);
     })

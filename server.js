@@ -20,6 +20,8 @@ const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 const upload = multer(); // no { storage: storage }
 const exphbs = require('express-handlebars');
+const itemData = require("./store-service");
+
 
 
 cloudinary.config({
@@ -73,9 +75,10 @@ app.get('/about', (req, res) => {
   res.status(200).render('about', { pageTitle: "Vansh Rana's Camp" });
 });
 
-app.get('/', (req, res) => {
-  res.redirect("/about")
+app.get("/", (req, res) => {
+  res.redirect("/shop");
 });
+
 
 
 app.get("/shop", async (req, res) => {
@@ -122,29 +125,56 @@ app.get("/shop", async (req, res) => {
   res.render("shop", { data: viewData });
 });
 
-// app.get('/items', (req, res) => {
-//   const cat = req.query.category;
-//   const mDate = req.query.minDate;
-//   if (cat) {
-//     store_service.getItemsByCategory(cat).then((data) => {
-//       res.json(data)
-//     }).catch((err) => {
-//       res.json(err);
-//     })
-//   } else if (mDate) {
-//     store_service.getItemsByMinDate(mDate).then((data) => {
-//       res.json(data)
-//     }).catch((err) => {
-//       res.json(err);
-//     })
-//   } else {
-//     store_service.getAllItems().then((data) => {
-//       res.json(data)
-//     }).catch((err) => {
-//       res.json(err);
-//     })
-//   }
-// });
+app.get('/shop/:id', async (req, res) => {
+
+  // Declare an object to store properties for the view
+  let viewData = {};
+
+  try {
+
+    // declare empty array to hold "item" objects
+    let items = [];
+
+    // if there's a "category" query, filter the returned posts by category
+    if (req.query.category) {
+      // Obtain the published "posts" by category
+      items = await itemData.getPublishedItemsByCategory(req.query.category);
+    } else {
+      // Obtain the published "posts"
+      items = await itemData.getPublishedItems();
+    }
+
+    // sort the published items by postDate
+    items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+
+    // store the "items" and "item" data in the viewData object (to be passed to the view)
+    viewData.items = items;
+
+  } catch (err) {
+    viewData.message = "no results";
+  }
+
+  try {
+    // Obtain the item by "id"
+    viewData.item = await itemData.getItemById(req.params.id);
+  } catch (err) {
+    viewData.message = "no results";
+  }
+
+  try {
+    // Obtain the full list of "categories"
+    let categories = await itemData.getCategories();
+
+    // store the "categories" data in the viewData object (to be passed to the view)
+    viewData.categories = categories;
+  } catch (err) {
+    viewData.categoriesMessage = "no results"
+  }
+
+  // render the "shop" view with all of the data (viewData)
+  res.render("shop", { data: viewData })
+});
+
 app.get('/items', (req, res) => {
   const cat = req.query.category;
   const mDate = req.query.minDate;
@@ -204,10 +234,10 @@ app.get('/items/:value', (req, res) => {
 
 app.get('/categories', (req, res) => {
   store_service.getCategories().then((data) => {
-    res.render("categories", { categories: data });    
+    res.render("categories", { categories: data });
   }).catch((err) => {
     res.render("categories", { message: "no results" });
-    
+
   })
 });
 
@@ -271,8 +301,9 @@ store_service.initialize().then(function () {
 })
 
 
-app.use((req, res) => {
-  res.status(404).send("Page does not exist")
-})
+app.use((req, res, next) => {
+  res.status(404).render("404");
+});
+
 
 
