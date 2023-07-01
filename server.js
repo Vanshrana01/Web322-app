@@ -7,7 +7,7 @@ Name: Vansh Rana
 Student ID: 169672219 
 Date: 30 June 2023
 Cyclic Web App URL: https://comfortable-mite-pocketbook.cyclic.app
-GitHub Repository URL: https://github.com/Vanshrana01/Assignment2.git
+GitHub Repository URL: https://github.com/Vanshrana01/Web322-app.git
 
 ********************************************************************************/
 
