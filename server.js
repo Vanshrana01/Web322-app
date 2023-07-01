@@ -56,22 +56,18 @@ app.engine('.hbs', exphbs({
         options.fn(this) +
         "</a></li>"
       )
+    },
+    equal: function (lvalue, rvalue, options) {
+      if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+      if (lvalue != rvalue) {
+        return options.inverse(this);
+      } else {
+        return options.fn(this);
+      }
     }
   }
 }));
-
-handlebars.registerHelper('equals', function(lvalue, rvalue, options) {
-  if (arguments.length < 3) {
-    throw new Error("Handlebars Helper 'equals' needs 2 parameters");
-  }
-  if (lvalue != rvalue) {
-    return options.inverse(this);
-  } else {
-    return options.fn(this);
-  }
-});
-
-
 
 app.get('/about', (req, res) => {
   res.status(200).render('about', { pageTitle: "Vansh Rana's Camp" });
