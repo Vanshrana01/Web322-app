@@ -5,17 +5,17 @@
         <div class="row">
           <div class="col-4">
             <h2>{{data.post.title}}</h2>
-            <img src="{{data.post.featureImage}}" alt="feature Image" style="width:100%" />
+            <img src="{{data.post.featureImage}}" alt="Feature Image" style="width:100%" />
           </div>
 
           <div class="col-8">
-            <br /><br />
+            <br />
+            <br />
             <div class="row">
               <div class="col-12">
-                {{#safeHTML data.post.body}}
-                {{/safeHTML}}
+                {{safeHTML data.post.body}}
                 <br /><br />
-                <strong>Price:</strong> {{data.post.price}}<br />
+                <strong>Price:</strong> $ {{data.post.price}}<br />
                 <strong>Category:</strong> {{data.post.category}}<br />
                 <strong>Last Updated:</strong> {{data.post.postdate}}
               </div>
@@ -52,3 +52,4 @@
     {{/if}}
   </aside>
 </div>
+
