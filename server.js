@@ -86,27 +86,69 @@ app.get('/shop', (req, res) => {
   })
 });
 
+// app.get('/items', (req, res) => {
+//   const cat = req.query.category;
+//   const mDate = req.query.minDate;
+//   if (cat) {
+//     store_service.getItemsByCategory(cat).then((data) => {
+//       res.json(data)
+//     }).catch((err) => {
+//       res.json(err);
+//     })
+//   } else if (mDate) {
+//     store_service.getItemsByMinDate(mDate).then((data) => {
+//       res.json(data)
+//     }).catch((err) => {
+//       res.json(err);
+//     })
+//   } else {
+//     store_service.getAllItems().then((data) => {
+//       res.json(data)
+//     }).catch((err) => {
+//       res.json(err);
+//     })
+//   }
+// });
 app.get('/items', (req, res) => {
   const cat = req.query.category;
   const mDate = req.query.minDate;
+
   if (cat) {
-    store_service.getItemsByCategory(cat).then((data) => {
-      res.json(data)
-    }).catch((err) => {
-      res.json(err);
-    })
+    store_service.getItemsByCategory(cat)
+      .then((data) => {
+        if (data.length > 0) {
+          res.render('items', { items: data });
+        } else {
+          res.render('items', { message: 'no results' });
+        }
+      })
+      .catch((err) => {
+        res.render('items', { message: 'no results' });
+      });
   } else if (mDate) {
-    store_service.getItemsByMinDate(mDate).then((data) => {
-      res.json(data)
-    }).catch((err) => {
-      res.json(err);
-    })
+    store_service.getItemsByMinDate(mDate)
+      .then((data) => {
+        if (data.length > 0) {
+          res.render('items', { items: data });
+        } else {
+          res.render('items', { message: 'no results' });
+        }
+      })
+      .catch((err) => {
+        res.render('items', { message: 'no results' });
+      });
   } else {
-    store_service.getAllItems().then((data) => {
-      res.json(data)
-    }).catch((err) => {
-      res.json(err);
-    })
+    store_service.getAllItems()
+      .then((data) => {
+        if (data.length > 0) {
+          res.render('items', { items: data });
+        } else {
+          res.render('items', { message: 'no results' });
+        }
+      })
+      .catch((err) => {
+        res.render('items', { message: 'no results' });
+      });
   }
 });
 
