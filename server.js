@@ -29,15 +29,49 @@ cloudinary.config({
   secure: true
 });
 
-app.use(express.static('public')); 
+app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 app.engine('.hbs', exphbs({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
 
-// app.get('/about', (req, res) => {
-//   res.render('about', { pageTitle: "Vansh Rana's Camp" });
-// });
+app.use(function (req, res, next) {
+  let route = req.path.substring(1);
+  app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
+  app.locals.viewingCategory = req.query.category;
+  next();
+});
+
+app.engine('.hbs', exphbs({
+  extname: ".hbs",
+  defaultLayout: "main",
+  helpers: {
+    navLink: function (url, options) {
+      return (
+        '<li class="nav-item"><a  ' +
+        (url == app.locals.activeRoute ? ' class="nav-link active" ' : ' class="nav-link" ') +
+        ' href=" ' +
+        url +
+        '">' +
+        options.fn(this) +
+        "</a></li>"
+      )
+    }
+  }
+}));
+
+handlebars.registerHelper('equals', function(lvalue, rvalue, options) {
+  if (arguments.length < 3) {
+    throw new Error("Handlebars Helper 'equals' needs 2 parameters");
+  }
+  if (lvalue != rvalue) {
+    return options.inverse(this);
+  } else {
+    return options.fn(this);
+  }
+});
+
+
 
 app.get('/about', (req, res) => {
   res.status(200).render('about', { pageTitle: "Vansh Rana's Camp" });
@@ -47,14 +81,11 @@ app.get('/', (req, res) => {
   res.redirect("/about")
 });
 
-// app.get('/about', (req, res) => {
-//     res.sendFile(__dirname + "/views/about.html")
-//   });
 
 app.get('/shop', (req, res) => {
-  store_service.getPublishedItems().then((data)=>{
+  store_service.getPublishedItems().then((data) => {
     res.json(data)
-  }).catch((err)=>{
+  }).catch((err) => {
     res.json(err);
   })
 });
@@ -62,24 +93,22 @@ app.get('/shop', (req, res) => {
 app.get('/items', (req, res) => {
   const cat = req.query.category;
   const mDate = req.query.minDate;
-  if(cat)
-  {
-    store_service.getItemsByCategory(cat).then((data)=>{
+  if (cat) {
+    store_service.getItemsByCategory(cat).then((data) => {
       res.json(data)
-    }).catch((err)=>{
+    }).catch((err) => {
       res.json(err);
     })
-  }else if(mDate)
-  {
-    store_service.getItemsByMinDate(mDate).then((data)=>{
+  } else if (mDate) {
+    store_service.getItemsByMinDate(mDate).then((data) => {
       res.json(data)
-    }).catch((err)=>{
+    }).catch((err) => {
       res.json(err);
     })
-  }else{
-    store_service.getAllItems().then((data)=>{
+  } else {
+    store_service.getAllItems().then((data) => {
       res.json(data)
-    }).catch((err)=>{
+    }).catch((err) => {
       res.json(err);
     })
   }
@@ -90,88 +119,88 @@ app.get('/items', (req, res) => {
 //     res.sendFile(__dirname + "/views/addItem.html")
 //   });
 app.get('/items/add', (req, res) => {
-  res.render('addPost'); 
+  res.render('addPost');
 });
 
 
 app.get('/items/:value', (req, res) => {
   const value = parseInt(req.params.value, 10);
-  store_service.getItemById(value).then((data)=>{
+  store_service.getItemById(value).then((data) => {
     res.json(data)
-  }).catch((err)=>{
+  }).catch((err) => {
     res.json(err);
   })
 });
 
 app.get('/categories', (req, res) => {
-    store_service.getCategories().then((data)=>{
-      res.json(data)
-    }).catch((err)=>{
-      res.json(err);
-    })
-  });
+  store_service.getCategories().then((data) => {
+    res.json(data)
+  }).catch((err) => {
+    res.json(err);
+  })
+});
 
 
 
-  app.post('/items/add',upload.single("featureImage"),(req,res)=>{
-    if(req.file){
-      let streamUpload = (req) => {
-          return new Promise((resolve, reject) => {
-              let stream = cloudinary.uploader.upload_stream(
-                  (error, result) => {
-                      if (result) {
-                          resolve(result);
-                      } else {
-                          reject(error);
-                      }
-                  }
-              );
-  
-              streamifier.createReadStream(req.file.buffer).pipe(stream);
-          });
-      };
-  
-      async function upload(req) {
-          let result = await streamUpload(req);
-          console.log(result);
-          return result;
-      }
-  
-      upload(req).then((uploaded)=>{
-          processItem(uploaded.url);
+app.post('/items/add', upload.single("featureImage"), (req, res) => {
+  if (req.file) {
+    let streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+        let stream = cloudinary.uploader.upload_stream(
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
       });
-  }else{
-      processItem("");
+    };
+
+    async function upload(req) {
+      let result = await streamUpload(req);
+      console.log(result);
+      return result;
+    }
+
+    upload(req).then((uploaded) => {
+      processItem(uploaded.url);
+    });
+  } else {
+    processItem("");
   }
-   
-  function processItem(imageUrl){
-      req.body.featureImage = imageUrl;
-  
-      // TODO: Process the req.body and add it as a new Item before redirecting to /items
-      store_service.addItem(req.body);
-      res.redirect('/items')
-  } 
-  
-  });
 
-  app.get('*', function(req, res){
-    res.send('Page not found, check URL', 404);
-  });
+  function processItem(imageUrl) {
+    req.body.featureImage = imageUrl;
+
+    // TODO: Process the req.body and add it as a new Item before redirecting to /items
+    store_service.addItem(req.body);
+    res.redirect('/items')
+  }
+
+});
+
+app.get('*', function (req, res) {
+  res.send('Page not found, check URL', 404);
+});
 
 
 
-function onHTTPstart(){
+function onHTTPstart() {
   console.log("server started on port: " + port)
 }
 
-store_service.initialize().then(function(){
-  app.listen(port,onHTTPstart);
-}).catch(function(err){
+store_service.initialize().then(function () {
+  app.listen(port, onHTTPstart);
+}).catch(function (err) {
   console.log("unable to start" + err)
 })
 
 
-app.use((req,res)=>{
+app.use((req, res) => {
   res.status(404).send("Page does not exist")
 })
 

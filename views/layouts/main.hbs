@@ -26,7 +26,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
+                    {{!-- <li class="nav-item">
                         <a class="nav-link" href="/shop">shop</a>
                     </li>
                     <li class="nav-item active">
@@ -42,7 +42,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="/items/add">Add Item</a>
-                    </li>
+                    </li> --}}
+                    {{#navLink "/Shop"}}Shop{{/navLink}}
+                    {{#navLink "/About"}}About{{/navLink}}
+                    {{#navLink "/Items"}}Items{{/navLink}}
+                    {{#navLink "/Categories"}}Categories{{/navLink}}
+                    {{#navLink "/items/add"}}Add Items{{/navLink}}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
