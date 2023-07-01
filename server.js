@@ -219,7 +219,7 @@ app.get('/items', (req, res) => {
 });
 
 app.get('/items/add', (req, res) => {
-  res.render('addPost');
+  res.render('addpost');
 });
 
 
