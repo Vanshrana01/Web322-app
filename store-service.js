@@ -131,3 +131,15 @@ module.exports.getItemById = (id)=>{
         reject("no result returned");
     })
 } 
+
+function getPublishedItemsByCategory(category) {
+    return new Promise((resolve, reject) => {
+      try {
+        const filteredItems = items.filter((item) => item.published && item.category === category);
+        resolve(filteredItems);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+  
