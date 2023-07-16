@@ -1,146 +1,66 @@
-const fs = require("fs"); 
+const Sequelize = require('sequelize');
+var sequelize = new Sequelize('vbnkvrau', 'vbnkvrau', 'QF7KOMiqReJJeBpBigMs8F8ecWlW7IrO', {
+    host: 'lallah.db.elephantsql.com',
+    dialect: 'postgres',
+    port: 5432,
+    dialectOptions: {
+        ssl: { rejectUnauthorized: false }
+    },
+    query: { raw: true }
+});
 
-items =[];
-categories = [];
-
-module.exports.initialize = ()=>{
-return new Promise((resolve,reject)=>{
-    fs.readFile('./data/items.json', 'utf8', (err, data) => {
-        if (err){
-            reject(err);
-        }else{
-            items = JSON.parse(data);
-            fs.readFile('./data/categories.json','utf8',(err,data)=>{
-                if(err)
-                {
-                    reject(err)
-                }else{
-                    categories = JSON.parse(data);
-                    resolve();
-                }
-            })
-        }
-   });
-   })
-};  
-
-module.exports.getAllItems = () =>{
-    return new Promise((resolve,reject)=>{
-        if(items.length==0)
-        {
-            reject('items array is empty')
-        }else{
-            resolve(items)
-        }
+module.exports.initialize = () => {
+    return new Promise((resolve, reject) => {
+        reject();
     })
 };
 
-module.exports.getPublishedItems= () =>{
-    return new Promise((resolve,reject)=>{
-        let pubItems = [];
-        for (let i=0;i<items.length;i++)
-        {
-            if(items[i].published==true)
-            {
-                pubItems.push(items[i]);
-            }
-        }
-        if(pubItems.length==0)
-        {
-            reject("no published items");
-        }else{
-            resolve(pubItems);
-        }
-    });
-}
 
-module.exports.getCategories= () =>{
-    return new Promise((resolve,reject)=>{
-        if(categories.length==0)
-        {
-            reject('categories array is empty')
-        }else{
-            resolve(categories)
-        }
+module.exports.getAllItems = () => {
+    return new Promise((resolve, reject) => {
+        reject();
     })
 };
 
-module.exports.addItem = (itemData)=>{
-    return new Promise((resolve,reject)=>{
-        if(!itemData.published)
-        {
-            itemData.published=false;
-        }else{
-            itemData.published=true;
-        }
-        itemData.id=items.length+1;
-        itemData.postDate = new Date().toISOString().slice(0, 10);
-        items.push(itemData);
-        resolve(itemData);
+module.exports.getPublishedItems = () => {
+    return new Promise((resolve, reject) => {
+        reject();
     })
 };
 
-module.exports.getItemsByCategory = (category)=>{
-    result=[];
-return new Promise((resolve,reject)=>{
-    for(let i=0;i<items.length;i++)
-    {
-        if(items[i].category==category)
-        {
-            result.push(items[i]);
-        }
-    }
-    if(result.length==0)
-    {
-        reject("no results returned");
-    }else{
-        resolve(result);
-    }
-})
-};
-
-
-module.exports.getItemsByMinDate = (minDateStr)=>{
-    result=[];
-    return new Promise((resolve,reject)=>{
-        for(let i=0;i<items.length;i++)
-        {
-            if(new Date(items[i].postDate) >= new Date(minDateStr))
-            {
-                result.push(items[i]);
-            }
-        }
-        if(result.length==0)
-        {
-            reject("no results returned");
-        }else{
-            resolve(result);
-        }
-
-    })  
-};
-
-module.exports.getItemById = (id)=>{
-    return new Promise((resolve,reject)=>{
-        for(let i=0;i<items.length;i++)
-        {
-            if(items[i].id==id)
-            {
-                resolve(items[i]);
-            }
-        }
-        reject("no result returned");
+module.exports.getCategories = () => {
+    return new Promise((resolve, reject) => {
+        reject();
     })
-} 
+};
+
+module.exports.addItem = (itemData) => {
+    return new Promise((resolve, reject) => {
+        reject();
+    })
+};
+
+module.exports.getItemsByCategory = (category) => {
+    return new Promise((resolve, reject) => {
+        reject();
+    })
+};
+
+
+module.exports.getItemsByMinDate = (minDateStr) => {
+    return new Promise((resolve, reject) => {
+        reject();
+    })
+};
+
+module.exports.getItemById = (id) => {
+    return new Promise((resolve, reject) => {
+        reject();
+    })
+};
 
 function getPublishedItemsByCategory(category) {
     return new Promise((resolve, reject) => {
-      try {
-        const filteredItems = items.filter((item) => item.published && item.category === category);
-        resolve(filteredItems);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  }
-  
+        reject();
+    })
+};
