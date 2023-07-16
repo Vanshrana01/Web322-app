@@ -9,6 +9,22 @@ var sequelize = new Sequelize('vbnkvrau', 'vbnkvrau', 'QF7KOMiqReJJeBpBigMs8F8ec
     query: { raw: true }
 });
 
+var Item = sequelize.define('item', {
+    body: Sequelize.TEXT,
+    title: Sequelize.STRING,
+    postDate: Sequelize.DATE,
+    featureImage: Sequelize.STRING,
+    published: Sequelize.BOOLEAN,
+    price: Sequelize.DOUBLE
+});
+
+// Define the Category model
+var Category = sequelize.define('category', {
+    category: Sequelize.STRING
+});
+
+Item.belongsTo(Category, {foreignKey: 'category'});
+
 module.exports.initialize = () => {
     return new Promise((resolve, reject) => {
         reject();
