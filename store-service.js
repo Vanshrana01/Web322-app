@@ -114,10 +114,14 @@ module.exports.getItemById = (id) => {
 };
 
 
-module.exports.getPublishedItemsByCategory(category) {
+exports.getPublishedItemsByCategory = (category) => { 
     return new Promise((resolve, reject) => {
-        Item.findAll({ where: { published: true, category } })
-            .then((items) => resolve(items))
-            .catch(() => reject('No results returned'));
-    });
+        Item.findAll({
+            where: { category: category, published: true }
+        }).then((data) => {
+            resolve(data);
+        }).catch((err) => {
+            reject("no results returned");
+        })
+    })
 };
