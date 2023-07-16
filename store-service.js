@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-var sequelize = new Sequelize('vbnkvrau', 'vbnkvrau', 'QF7KOMiqReJJeBpBigMs8F8ecWlW7IrO', {
+const sequelize = new Sequelize('vbnkvrau', 'vbnkvrau', 'QF7KOMiqReJJeBpBigMs8F8ecWlW7IrO', {
     host: 'lallah.db.elephantsql.com',
     dialect: 'postgres',
     port: 5432,
@@ -23,7 +23,7 @@ const Category = sequelize.define('category', {
     category: Sequelize.STRING
 });
 
-Item.belongsTo(Category, { foreignKey: 'category' });
+Item.belongsTo(Category, { foreignKey: 'categoryID' });
 
 module.exports.initialize = () => {
     return new Promise((resolve, reject) => {
