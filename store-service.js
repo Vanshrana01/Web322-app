@@ -114,7 +114,7 @@ module.exports.getItemById = (id) => {
 };
 
 
-exports.getPublishedItemsByCategory = (category) => { 
+module.exports.getPublishedItemsByCategory = (category) => { 
     return new Promise((resolve, reject) => {
         Item.findAll({
             where: { category: category, published: true }
