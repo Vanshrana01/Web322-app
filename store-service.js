@@ -9,7 +9,7 @@ var sequelize = new Sequelize('vbnkvrau', 'vbnkvrau', 'QF7KOMiqReJJeBpBigMs8F8ec
     query: { raw: true }
 });
 
-var Item = sequelize.define('item', {
+const Item = sequelize.define('item', {
     body: Sequelize.TEXT,
     title: Sequelize.STRING,
     postDate: Sequelize.DATE,
@@ -19,7 +19,7 @@ var Item = sequelize.define('item', {
 });
 
 // Define the Category model
-var Category = sequelize.define('category', {
+const Category = sequelize.define('category', {
     category: Sequelize.STRING
 });
 
