@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('vbnkvrau', 'vbnkvrau', 'QF7KOMiqReJJeBpBigMs8F8ecWlW7IrO', {
+var sequelize = new Sequelize('lhulfkrt', 'lhulfkrt', 'numACwdNfELzOKz8LR8RCfCxo9yrau5E', {
     host: 'lallah.db.elephantsql.com',
     dialect: 'postgres',
     port: 5432,
@@ -19,21 +19,19 @@ const Item = sequelize.define('item', {
 });
 
 // Define the Category model
-const Category = sequelize.define('category', {
+const Category = sequelize.define('Category', {
     category: Sequelize.STRING
 });
 
-Item.belongsTo(Category, { foreignKey: 'categoryID' });
+Item.belongsTo(Category, { foreignKey: 'category' });
 
 module.exports.initialize = () => {
     return new Promise((resolve, reject) => {
-        Item.sync()
-            .then(() => {
-                Category.sync()
-                    .then(() => resolve())
-                    .catch(() => reject('Unable to sync the database'));
-            })
-            .catch(() => reject('Unable to sync the database'));
+        sequelize.sync().then(()=>{
+            resolve();
+        }).catch(err=>{
+            reject("unable to sync the database");
+        });
     });
 };
 
