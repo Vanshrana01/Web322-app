@@ -240,11 +240,15 @@ app.get('/items/:value', (req, res) => {
 
 app.get('/categories', (req, res) => {
   store_service.getCategories().then((data) => {
-    res.render("categories", { categories: data });
-  }).catch((err) => {
-    res.render("categories", { message: "no results" });
-
+    if (data.length > 0) {
+      res.render("categories", { Items: data });
+    } else {
+      res.render("categories", { message: "No results" });
+    }
   })
+  .catch((error) => {
+    res.render("categories", { error: "An error occurred while fetching data" });
+  });
 });
 
 
