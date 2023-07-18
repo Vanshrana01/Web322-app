@@ -27,9 +27,9 @@ Item.belongsTo(Category, { foreignKey: 'category' });
 
 module.exports.initialize = () => {
     return new Promise((resolve, reject) => {
-        sequelize.sync().then(()=>{
+        sequelize.sync().then(() => {
             resolve();
-        }).catch(err=>{
+        }).catch(err => {
             reject("unable to sync the database");
         });
     });
@@ -112,7 +112,7 @@ module.exports.getItemById = (id) => {
 };
 
 
-module.exports.getPublishedItemsByCategory = (category) => { 
+module.exports.getPublishedItemsByCategory = (category) => {
     return new Promise((resolve, reject) => {
         Item.findAll({
             where: { category: category, published: true }
@@ -123,3 +123,49 @@ module.exports.getPublishedItemsByCategory = (category) => {
         })
     })
 };
+
+module.exports.addCategory = function (categoryData) {
+    return new Promise((resolve, reject) => {
+        for (var prop in categoryData) {
+            if (categoryData[prop] === "") {
+                categoryData[prop] = null;
+            }
+        }
+
+        Category.create({
+            category: categoryData.category
+        }).then(data => {
+            resolve(data);
+        }).catch(err => {
+            reject("unable to create category");
+        });
+    });
+};
+
+module.exports.deleteCategoryById = function (id) {
+    return new Promise((resolve, reject) => {
+        Category.destroy({
+            where: {
+                id: id
+            }
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject();
+        });
+    });
+};
+
+module.exports.deleteItemById = function (id) {
+    return new Promise((resolve, reject) => {
+        Item.destroy({
+            where: {
+                id: id
+            }
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject();
+        });
+    });
+}
