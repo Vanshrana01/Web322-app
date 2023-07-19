@@ -226,7 +226,11 @@ app.get('/items', (req, res) => {
 });
 
 app.get('/items/add', (req, res) => {
-  res.render('addpost');
+  store_service.getCategories().then(data=>{
+    res.render("addPost", {categories: data});
+}).catch(err=>{
+    res.render("addPost", {categories: []});
+});
 });
 
 
