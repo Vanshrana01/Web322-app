@@ -156,9 +156,9 @@ module.exports.deleteCategoryById = function (id) {
     });
 };
 
-module.exports.deleteItemById = function (id) {
+module.exports.deletePostById = function (id) {
     return new Promise((resolve, reject) => {
-        Item.destroy({
+        Post.destroy({
             where: {
                 id: id
             }

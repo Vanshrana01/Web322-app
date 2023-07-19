@@ -32,6 +32,7 @@ cloudinary.config({
 });
 
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
 app.engine('.hbs', exphbs({ extname: '.hbs' }));
@@ -68,12 +69,12 @@ app.engine('.hbs', exphbs({
         return options.fn(this);
       }
     },
-    formatDate: function(dateObj){
+    formatDate: function (dateObj) {
       let year = dateObj.getFullYear();
       let month = (dateObj.getMonth() + 1).toString();
       let day = dateObj.getDate().toString();
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2,'0')}`;
-  }  
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
   }
 }));
 
@@ -246,9 +247,9 @@ app.get('/categories', (req, res) => {
       res.render("categories", { message: "No results" });
     }
   })
-  .catch((error) => {
-    res.render("categories", { error: "An error occurred while fetching data" });
-  });
+    .catch((error) => {
+      res.render("categories", { error: "An error occurred while fetching data" });
+    });
 });
 
 
@@ -292,6 +293,31 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
     res.redirect('/items')
   }
 
+});
+app.get("/categories/add", (req, res) => {
+  res.render("addCategory");
+});
+
+app.post("/categories/add", (req, res) => {
+  store_service.addCategory(req.body).then((data) => {
+    res.redirect("/categories");
+  });
+});
+
+app.get("/categories/delete/:id", (req, res) => {
+  store_service.deleteCategoryById(req.params.id).then((data) => {
+    res.redirect("/categories");
+  }).catch(err => {
+    res.status(500).send("Unable to Remove Category / Category Not Found");
+  });
+});
+
+app.get("/posts/delete/:id", (req, res) => {
+  store_service.deletePostById(req.params.id).then((data) => {
+    res.redirect("/items");
+  }).catch(err => {
+    res.status(500).send("Unable to Remove Post / Post Not Found");
+  });
 });
 
 app.get('*', function (req, res) {
