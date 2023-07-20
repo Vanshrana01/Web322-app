@@ -17,28 +17,26 @@
         </thead>
         <tbody>
           {{#if items}}
-            {{#each items}}
-              <tr>
-                <td>{{@index}}</td>
-                <td>{{this.title}}</td>
-                <td>{{this.postDate}}</td>
-                <td>{{this.price}}</td>
-                <td><a href="/items?category={{this.category}}">{{this.category}}</a></td>
-                <td>{{this.published}}</td>
-              </tr>
-            {{/each}}
+          {{#each items}}
+          <tr>
+            <td>{{@index}}</td>
+            <td>{{this.title}}</td>
+            <td>{{this.postDate}}</td>
+            <td>{{this.price}}</td>
+            <td><a href="/items?category={{this.category}}">{{this.category}}</a></td>
+            <td>{{this.published}}</td>
+            <td>
+              <a href="/Items/delete/{{this.id}}" class="btn btn-danger">remove</a>
+            </td>
+          </tr>
+          {{/each}}
           {{else}}
-            <tr>
-              <td colspan="6" class="text-center"><strong>{{message}}</strong></td>
-            </tr>
+          <tr>
+            <td colspan="7" class="text-center"><strong>{{message}}</strong></td>
+          </tr>
           {{/if}}
         </tbody>
       </table>
     </div>
   </div>
 </div>
-
-
-
-
-
