@@ -21,6 +21,8 @@ const streamifier = require('streamifier')
 const upload = multer(); // no { storage: storage }
 const exphbs = require('express-handlebars');
 const itemData = require("./store-service");
+const authData = require('./auth-service');
+
 
 
 
