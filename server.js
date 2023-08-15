@@ -5,7 +5,7 @@ I declare that this assignment is my own work in accordance with Seneca  Academi
 
 Name: Vansh Rana
 Student ID: 169672219 
-Date: 19 July 2023
+Date: 14 August 2023
 Cyclic Web App URL: https://comfortable-mite-pocketbook.cyclic.app
 GitHub Repository URL: https://github.com/Vanshrana01/Web322-app.git
 
@@ -22,6 +22,7 @@ const upload = multer(); // no { storage: storage }
 const exphbs = require('express-handlebars');
 const itemData = require("./store-service");
 const authData = require('./auth-service');
+const clientSessions = require('client-sessions');
 
 
 
@@ -41,11 +42,31 @@ app.engine('.hbs', exphbs({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
 
 app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
+app.use(clientSessions({
+  cookieName: "session",
+  secret: "week10example_web322",
+  duration: 2 * 60 * 1000,
+  activeDuration: 1000 * 60
+}));
+
+app.use(function (req, res, next) {
   let route = req.path.substring(1);
   app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
   app.locals.viewingCategory = req.query.category;
   next();
 });
+
+function ensureLogin(req, res, next) {
+  if (!req.session.userName) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+}
 
 app.engine('.hbs', exphbs({
   extname: ".hbs",
@@ -228,11 +249,11 @@ app.get('/items', (req, res) => {
 });
 
 app.get('/items/add', (req, res) => {
-  store_service.getCategories().then(data=>{
-    res.render("addPost", {categories: data});
-}).catch(err=>{
-    res.render("addPost", {categories: []});
-});
+  store_service.getCategories().then(data => {
+    res.render("addPost", { categories: data });
+  }).catch(err => {
+    res.render("addPost", { categories: [] });
+  });
 });
 
 
@@ -326,6 +347,49 @@ app.get("/posts/delete/:id", (req, res) => {
   });
 });
 
+app.get('/login', function(req, res) {
+  res.render('login'); // Render the login view
+});
+
+app.get('/register', function(req, res) {
+  res.render('register'); // Render the register view
+});
+
+app.post('/register', function(req, res) {
+  authData.registerUser(req.body)
+    .then(() => {
+      res.render('register', { successMessage: 'User created' });
+    })
+    .catch(err => {
+      res.render('register', { errorMessage: err, userName: req.body.userName });
+    });
+});
+
+app.post('/login', function(req, res) {
+  req.body.userAgent = req.get('User-Agent'); // Set User-Agent in request body
+  authData.checkUser(req.body)
+    .then(user => {
+      req.session.user = {
+        userName: user.userName,
+        email: user.email,
+        loginHistory: user.loginHistory
+      };
+      res.redirect('/items'); // Redirect to items view
+    })
+    .catch(err => {
+      res.render('login', { errorMessage: err, userName: req.body.userName });
+    });
+});
+
+app.get('/logout', function(req, res) {
+  req.session.reset(); // Reset the session
+  res.redirect('/'); // Redirect to the home route
+});
+
+app.get('/userHistory', ensureLogin, function(req, res) {
+  res.render('userHistory'); // Render the userHistory view
+});
+
 app.get('*', function (req, res) {
   res.send('Page not found, check URL', 404);
 });
@@ -336,11 +400,16 @@ function onHTTPstart() {
   console.log("server started on port: " + port)
 }
 
-store_service.initialize().then(function () {
-  app.listen(port, onHTTPstart);
-}).catch(function (err) {
-  console.log("unable to start" + err)
-})
+store_service.initialize()
+  .then(authData.initialize)
+  .then(function () {
+    app.listen(port, function () {
+      console.log("app listening on: " + port)
+    });
+  }).catch(function (err) {
+    console.log("unable to start server: " + err);
+  });
+
 
 
 app.use((req, res, next) => {

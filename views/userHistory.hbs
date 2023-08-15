@@ -1,0 +1,22 @@
+<div class="container">
+    <h2>{{session.user.userName}} ({{session.user.email}}) History</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Login Date/Time</th>
+                <th>Client Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each session.user.loginHistory}}
+            <tr>
+                <td>{{this.dateTime}}</td>
+                <td>{{this.userAgent}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="/items">Back to Items</a>
+</div>
